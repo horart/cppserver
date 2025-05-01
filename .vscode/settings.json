@@ -67,6 +67,8 @@
         "socket": "cpp",
         "timer": "cpp",
         "sstream": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "csignal": "cpp",
+        "shared_mutex": "cpp"
     }
 }

@@ -47,8 +47,8 @@ void Server::parseAndEnqueue(std::shared_ptr<Socket> client) {
             toProcess.enqueue(&Server::process, this, std::move(buf), client);
         }
         else if(client->buffer->desiredSize == 0) {
-            char* ptr = client->buffer->data.get();
-            char* const endPtr = client->buffer->data.get() + client->buffer->size;
+            char* ptr = client->buffer->data.get() + client->buffer->start;
+            char* const endPtr = client->buffer->data.get() + client->buffer->start + client->buffer->size;
             while(ptr != endPtr && !('0' <= *ptr && *ptr <= '9')) {
                 ++ptr;
             }
@@ -58,8 +58,9 @@ void Server::parseAndEnqueue(std::shared_ptr<Socket> client) {
             }
             else {
                 client->buffer->desiredSize = strtol(ptr, &ptr, 10);
+                const size_t oldStart = client->buffer->start;
                 client->buffer->start = ptr - client->buffer->data.get();
-                client->buffer->size -= client->buffer->start;
+                client->buffer->size -= client->buffer->start - oldStart;
             }
         }
         else {
@@ -162,10 +163,10 @@ void Server::process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) 
     char* p;
     int i = strtol(buf->data.get() + buf->start, &p, 10);
     size_t len = sprintf(b->data.get(), "%x", i);
-    b->desiredSize = len;
+    b->size = len;
     toSend.enqueue(&Server::send, this, std::move(b), client);
 }
 
 void Server::send(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) {
-    client->sendall(buf->data.get() + buf->start, buf->desiredSize);
+    client->sendall(buf->data.get() + buf->start, buf->size);
 }
