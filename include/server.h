@@ -43,6 +43,7 @@ private:
     virtual void process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
     virtual void send(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
     virtual void parseAndEnqueue(std::shared_ptr<Socket> client);
+    virtual void sendMessageTooLong(std::shared_ptr<Socket> client);
 
 public:
     Server() = delete;

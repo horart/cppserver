@@ -133,10 +133,15 @@ void Server::run() {
 
             std::shared_ptr<Socket> client = clients.getOrCreateClient(events[i].data.fd);
 
+            size_t avail = BUFFER_SIZE - client->buffer->start - client->buffer->size;
+            if(avail == 0) {
+                sendMessageTooLong(client);
+                client->buffer = bp->fetch();
+            }
             int bytesGot = recv(
                 events[i].data.fd,
                 client->buffer->data.get() + client->buffer->start + client->buffer->size,
-                BUFFER_SIZE - client->buffer->size,
+                avail,
                 0
             );
             if(bytesGot <= 0) {
@@ -147,6 +152,11 @@ void Server::run() {
             parseAndEnqueue(client);
         }
     }
+}
+
+void Server::sendMessageTooLong(std::shared_ptr<Socket> client) {
+    auto msg = "Message too long\n";
+    client->sendall(msg, sizeof(msg));
 }
 
 void Server::sigint(int) {
