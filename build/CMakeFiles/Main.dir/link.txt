@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/Main.dir/src/main.cpp.o -o Main   -L/home/horart/Desktop/edu/cpp/sockets/src 

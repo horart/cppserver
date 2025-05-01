@@ -1,0 +1,4 @@
+/home/horart/edu/cpp/sockets/build/CMakeFiles/ServerLib.dir
+/home/horart/edu/cpp/sockets/build/CMakeFiles/server.dir
+/home/horart/edu/cpp/sockets/build/CMakeFiles/edit_cache.dir
+/home/horart/edu/cpp/sockets/build/CMakeFiles/rebuild_cache.dir

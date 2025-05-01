@@ -14,7 +14,8 @@
         {
             "name": "Linux C++20",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include/*"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
