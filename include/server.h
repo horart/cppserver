@@ -37,18 +37,19 @@ private:
     ThreadPool toSend;
     ClientsMapping clients;
     std::shared_ptr<BufferPool> bp;
+    inline static std::atomic<bool> running = false;
 
 private:
     void process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
     void send(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
-
     void parseAndEnqueue(std::shared_ptr<Socket> client);
 
 public:
     Server() = delete;
     Server(const addrinfo& addr, int maxConnections = 10);
-
+    
     void run();
+    static void sigint(int);
 };
 
 #endif

@@ -1,5 +1,1 @@
-3. Buffer reusage (buffer pools?)
-5. add sigint
 7. buffer overflow
-8. bad file descriptor on reconnect
-9. figure out how to debug cmake

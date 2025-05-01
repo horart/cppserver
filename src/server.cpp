@@ -15,6 +15,8 @@
 #include <unordered_map>
 #include <mutex>
 #include <string_view>
+#include <csignal>
+#include <functional>
 
 #include "threadpool.h"
 #include "socket.h"
@@ -82,6 +84,8 @@ Server::Server(const addrinfo& addr, int maxConnections): toProcess(), toSend(1)
 }
 
 void Server::run() {
+    running = true;
+    sighandler_t oldSigint = std::signal(SIGINT, &Server::sigint);
     int epollfd = epoll_create1(0);
     if(epollfd == -1) {
         throw NetworkException(strerror(errno));
@@ -94,6 +98,10 @@ void Server::run() {
     }
     epoll_event events[1024];
     while(1) {
+        if(running == false) {
+            std::signal(SIGINT, oldSigint);
+            break;
+        }
         int numberOfEvents = epoll_wait(epollfd, events, 1024, 1000);
         for(int i = 0; i < numberOfEvents; ++i) {
             if(events[i].data.fd == serverfd) {
@@ -102,7 +110,7 @@ void Server::run() {
                     continue;
                 }
                 sockaddr clientaddr;
-                socklen_t clientaddrLen;
+                socklen_t clientaddrLen = sizeof(clientaddr);
                 int clientfd = accept(serverfd, &clientaddr, &clientaddrLen);
                 if(clientfd == -1) {
                     std::cerr << "couldn't accept: " << strerror(errno);
@@ -138,11 +146,12 @@ void Server::run() {
 
             client->buffer->size += bytesGot;
             parseAndEnqueue(client);
-
-            
-            
         }
     }
+}
+
+void Server::sigint(int) {
+    running = false;
 }
 
 void Server::process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) {
