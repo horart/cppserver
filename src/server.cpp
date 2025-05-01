@@ -85,8 +85,7 @@ Server::Server(const addrinfo& addr, int maxConnections): toProcess(), toSend(1)
 
 void Server::run() {
     running = true;
-    sighandler_t oldSigint = std::signal(SIGINT, &Server::sigint);
-    int epollfd = epoll_create1(0);
+    Socket epollfd = epoll_create1(0);
     if(epollfd == -1) {
         throw NetworkException(strerror(errno));
     }
@@ -99,7 +98,6 @@ void Server::run() {
     epoll_event events[1024];
     while(1) {
         if(running == false) {
-            std::signal(SIGINT, oldSigint);
             break;
         }
         int numberOfEvents = epoll_wait(epollfd, events, 1024, 1000);
