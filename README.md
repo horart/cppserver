@@ -26,16 +26,16 @@ make
 #include <memory>
 #include <csignal>
 class MyServer : public Server {
-    void parseAndEnqueue(std::shared_ptr<BufferedSocket>) {
+    void parseAndEnqueue(std::shared_ptr<BufferedSocket>) override {
         ...
     }
-    void sendMessageTooLong(std::shared_ptr<BufferedSocket>) {
+    void sendMessageTooLong(std::shared_ptr<BufferedSocket>) override {
         ...
     }
-    void process(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket>) {
+    void process(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> override) {
         ...
     }
-    void send(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket>) {
+    void send(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> override) {
         ...
     }
 };
