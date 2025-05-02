@@ -27,12 +27,16 @@
 #include "server.h"
 
 
+BufferPool::BufferPtr Server::getBuffer() {
+    return bp->fetch();
+}
+
 void Server::parseAndEnqueue(std::shared_ptr<Socket> client) {
     *(client->buffer->data.get() + client->buffer->start + client->buffer->size) = 0;
     
     while(true) {
         if(client->buffer->desiredSize && client->buffer->size >= client->buffer->desiredSize) {
-            BufferPool::BufferPtr buf = bp->fetch();
+            BufferPool::BufferPtr buf = getBuffer();
             buf.swap(client->buffer);
             char* const dataEndPtr = buf->data.get() + buf->start + buf->size;
             char* ptr = buf->data.get() + buf->start + buf->desiredSize;
@@ -136,7 +140,7 @@ void Server::run() {
             size_t avail = BUFFER_SIZE - client->buffer->start - client->buffer->size;
             if(avail == 0) {
                 sendMessageTooLong(client);
-                client->buffer = bp->fetch();
+                client->buffer = getBuffer();
             }
             int bytesGot = recv(
                 events[i].data.fd,
@@ -169,7 +173,7 @@ void Server::process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) 
         clients.disconnect(*client);
         return;
     }
-    BufferPool::BufferPtr b = bp->fetch();
+    BufferPool::BufferPtr b = getBuffer();
     char* p;
     int i = strtol(buf->data.get() + buf->start, &p, 10);
     size_t len = sprintf(b->data.get(), "%x", i);

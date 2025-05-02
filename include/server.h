@@ -35,7 +35,6 @@ private:
     Socket serverfd;
     ThreadPool toProcess;
     ThreadPool toSend;
-    ClientsMapping clients;
     std::shared_ptr<BufferPool> bp;
     inline static std::atomic<bool> running = false;
 
@@ -44,6 +43,11 @@ private:
     virtual void send(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
     virtual void parseAndEnqueue(std::shared_ptr<Socket> client);
     virtual void sendMessageTooLong(std::shared_ptr<Socket> client);
+
+protected:
+    ClientsMapping clients;
+protected:
+    BufferPool::BufferPtr getBuffer();
 
 public:
     Server() = delete;
