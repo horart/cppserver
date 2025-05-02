@@ -33,19 +33,23 @@ extern inline const int BUFFER_NUMBER = 128;
 class Server {
 private:
     Socket serverfd;
-    ThreadPool toProcess;
-    ThreadPool toSend;
     std::shared_ptr<BufferPool> bp;
     inline static std::atomic<bool> running = false;
 
 private:
+    // This method is called when there is a complete message to process
     virtual void process(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> client);
+    // This method is called when there is a need to send. 
     virtual void send(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> client);
+    // This method is called when there is new data to the stream
     virtual void parseAndEnqueue(std::shared_ptr<BufferedSocket> client);
+    // This method is called when the buffer is overflown by new client message
     virtual void sendMessageTooLong(std::shared_ptr<BufferedSocket> client);
 
 protected:
     ClientsMapping clients;
+    ThreadPool toProcess;
+    ThreadPool toSend;
 protected:
     BufferPool::BufferPtr getBuffer();
 
