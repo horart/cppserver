@@ -73,7 +73,7 @@ void Server::parseAndEnqueue(std::shared_ptr<BufferedSocket> client) {
     }
 }
 
-Server::Server(const addrinfo& addr, int maxConnections): toProcess(), toSend(1), bp(BufferPool::create(BUFFER_NUMBER)) {
+Server::Server(const addrinfo& addr, int maxConnections): bp(BufferPool::create(BUFFER_NUMBER)), toProcess(), toSend(1) {
     serverfd = socket(addr.ai_family, addr.ai_socktype, addr.ai_protocol);
     if(serverfd == -1) {
         throw NetworkException(strerror(errno));
