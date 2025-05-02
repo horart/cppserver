@@ -1,2 +1,0 @@
-/usr/bin/ar qc libServerLib.a CMakeFiles/ServerLib.dir/src/addrinfo.cpp.o CMakeFiles/ServerLib.dir/src/bufferpool.cpp.o CMakeFiles/ServerLib.dir/src/clientsmapping.cpp.o CMakeFiles/ServerLib.dir/src/exceptions.cpp.o CMakeFiles/ServerLib.dir/src/server.cpp.o CMakeFiles/ServerLib.dir/src/socket.cpp.o CMakeFiles/ServerLib.dir/src/threadpool.cpp.o
-/usr/bin/ranlib libServerLib.a
