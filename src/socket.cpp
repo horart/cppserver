@@ -11,16 +11,16 @@
 
 #include "socket.h"
 
-Socket::Socket(): fd(-1), buffer(nullptr) {}
-Socket::Socket(int fd, BufferPool::BufferPtr buffer): fd(fd), buffer(std::move(buffer)) {}
-    
-Socket::Socket(Socket&& other) noexcept: fd(other.fd) {
+Socket::Socket(): fd(-1) {}
+Socket::Socket(int fd): fd(fd) {}
+
+Socket::Socket(Socket&& other) noexcept {
+    fd = other.fd;
     other.fd = -1;
-    buffer = std::move(other.buffer);
 }
+
 Socket& Socket::operator=(Socket&& other) noexcept {
     std::swap(fd, other.fd);
-    std::swap(buffer, other.buffer);
     return *this;
 }
 
@@ -46,3 +46,7 @@ Socket::~Socket() {
         }
     }
 }
+
+BufferedSocket::BufferedSocket(int fd, BufferPool::BufferPtr buffer): 
+    Socket(fd), 
+    buffer(std::move(buffer)) {}

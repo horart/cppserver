@@ -31,7 +31,7 @@ BufferPool::BufferPtr Server::getBuffer() {
     return bp->fetch();
 }
 
-void Server::parseAndEnqueue(std::shared_ptr<Socket> client) {
+void Server::parseAndEnqueue(std::shared_ptr<BufferedSocket> client) {
     *(client->buffer->data.get() + client->buffer->start + client->buffer->size) = 0;
     
     while(true) {
@@ -135,7 +135,7 @@ void Server::run() {
                 continue;
             }
 
-            std::shared_ptr<Socket> client = clients.getOrCreateClient(events[i].data.fd);
+            std::shared_ptr<BufferedSocket> client = clients.getOrCreateClient(events[i].data.fd);
 
             size_t avail = BUFFER_SIZE - client->buffer->start - client->buffer->size;
             if(avail == 0) {
@@ -158,7 +158,7 @@ void Server::run() {
     }
 }
 
-void Server::sendMessageTooLong(std::shared_ptr<Socket> client) {
+void Server::sendMessageTooLong(std::shared_ptr<BufferedSocket> client) {
     auto msg = "Message too long\n";
     client->sendall(msg, sizeof(msg));
 }
@@ -167,7 +167,7 @@ void Server::sigint(int) {
     running = false;
 }
 
-void Server::process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) {
+void Server::process(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> client) {
     std::string_view q(buf->data.get() + buf->start, buf->desiredSize);
     if(q.starts_with("quit")) {
         clients.disconnect(*client);
@@ -181,6 +181,6 @@ void Server::process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) 
     toSend.enqueue(&Server::send, this, std::move(b), client);
 }
 
-void Server::send(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client) {
+void Server::send(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> client) {
     client->sendall(buf->data.get() + buf->start, buf->size);
 }

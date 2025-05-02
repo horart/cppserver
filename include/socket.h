@@ -13,24 +13,29 @@
 
 
 class Socket {
-    public:
-        int fd;
-        BufferPool::BufferPtr buffer;
-    public:
-        Socket();
-        Socket(int fd, BufferPool::BufferPtr buffer = nullptr);
-        Socket(const Socket&) = delete;
-        Socket& operator=(const Socket&) = delete;
-        
-        Socket(Socket&& other) noexcept;
-        Socket& operator=(Socket&& other) noexcept;
+public:
+    int fd;
+public:
+    Socket();
+    Socket(int fd);
+    Socket(const Socket&) = delete;
+    Socket& operator=(const Socket&) = delete;
     
-        void sendall(const char* buf, size_t len, int flags = 0);
-    
-        operator int();
-    
-        ~Socket();
-    };
-    
+    Socket(Socket&& other) noexcept;
+    Socket& operator=(Socket&& other) noexcept;
+
+    void sendall(const char* buf, size_t len, int flags = 0);
+
+    operator int();
+
+    ~Socket();
+};
+  
+class BufferedSocket : public Socket {
+public:
+    BufferPool::BufferPtr buffer;
+public:
+    BufferedSocket(int fd, BufferPool::BufferPtr buffer);
+};
 
 #endif

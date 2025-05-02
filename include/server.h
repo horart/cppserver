@@ -39,10 +39,10 @@ private:
     inline static std::atomic<bool> running = false;
 
 private:
-    virtual void process(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
-    virtual void send(BufferPool::BufferPtr buf, std::shared_ptr<Socket> client);
-    virtual void parseAndEnqueue(std::shared_ptr<Socket> client);
-    virtual void sendMessageTooLong(std::shared_ptr<Socket> client);
+    virtual void process(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> client);
+    virtual void send(BufferPool::BufferPtr buf, std::shared_ptr<BufferedSocket> client);
+    virtual void parseAndEnqueue(std::shared_ptr<BufferedSocket> client);
+    virtual void sendMessageTooLong(std::shared_ptr<BufferedSocket> client);
 
 protected:
     ClientsMapping clients;

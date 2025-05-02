@@ -19,12 +19,12 @@ bool ClientsMapping::disconnect(int fd) {
 }
 
 // Returns the associated socket, if there is no such one - creates it
-std::shared_ptr<Socket> ClientsMapping::getOrCreateClient(int fd) {
+std::shared_ptr<BufferedSocket> ClientsMapping::getOrCreateClient(int fd) {
     std::lock_guard<std::mutex> lk(mutex);
     auto it = clients.find(fd);
 
     if(it == clients.end()) {
-        it = clients.emplace(fd, std::make_shared<Socket>(fd, bp->fetch())).first;
+        it = clients.emplace(fd, std::make_shared<BufferedSocket>(fd, bp->fetch())).first;
     }
     return it->second;
 }

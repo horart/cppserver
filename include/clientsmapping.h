@@ -9,7 +9,7 @@
 
 class ClientsMapping {
 private:
-    std::unordered_map<int, std::shared_ptr<Socket>> clients;
+    std::unordered_map<int, std::shared_ptr<BufferedSocket>> clients;
     std::shared_ptr<BufferPool> bp;
     std::mutex mutex;
 public:
@@ -20,7 +20,7 @@ public:
     bool disconnect(int fd);
 
     // Returns the associated socket, if there is no such one - creates it
-    std::shared_ptr<Socket> getOrCreateClient(int fd);
+    std::shared_ptr<BufferedSocket> getOrCreateClient(int fd);
 };
 
 #endif
